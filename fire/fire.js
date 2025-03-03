@@ -96,8 +96,8 @@
       if (!Lampa.Component.get('bwarch') && !window.bwarch_plugin) {
         // Якщо компонент не існує, завантажуємо rc.js
         var script = document.createElement('script');
-        // Використовуємо віддалений шлях до rc.js
-        script.src = Lampa.Utils.protocol() + 'lampa.stream/mods/rc.js';
+        // Використовуємо локальний шлях до rc.js
+        script.src = './mods/rc.js';
         script.onload = function() {
           // Після завантаження rc.js, запускаємо його
           Fire.openRcPlayer();
@@ -143,4 +143,4 @@
   // Запускаємо плагін, якщо він ще не запущений
   if (!window.fire_plugin) startPlugin();
 
-})(); 
+})();
