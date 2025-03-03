@@ -92,10 +92,11 @@
 
     // Запуск плагіна rc
     startRcPlugin: function() {
-      // Перевіряємо, чи існує компонент bwarch
-      if (!Lampa.Component.get('bwarch')) {
+      // Перевіряємо, чи існує компонент bwarch або глобальна змінна bwarch_plugin
+      if (!Lampa.Component.get('bwarch') && !window.bwarch_plugin) {
         // Якщо компонент не існує, завантажуємо rc.js
         var script = document.createElement('script');
+        // Використовуємо віддалений шлях до rc.js
         script.src = Lampa.Utils.protocol() + 'lampa.stream/mods/rc.js';
         script.onload = function() {
           // Після завантаження rc.js, запускаємо його
@@ -133,7 +134,13 @@
     }
   };
 
-  // Запускаємо плагін
-  Fire.init();
+  // Функція для запуску плагіна
+  function startPlugin() {
+    window.fire_plugin = true;
+    Fire.init();
+  }
+
+  // Запускаємо плагін, якщо він ще не запущений
+  if (!window.fire_plugin) startPlugin();
 
 })(); 
