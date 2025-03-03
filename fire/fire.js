@@ -18,15 +18,19 @@
   var Fire = {
     // Ініціалізація
     init: function() {
+      console.log('Fire Player: Ініціалізація плагіна');
+      
       // Додаємо обробник подій для екрану фільму
       Lampa.Listener.follow('full', function(e) {
         if (e.type == 'complite') {
+          console.log('Fire Player: Подія full complite, додаю кнопку');
           Fire.addButton(e.data.movie);
         }
       });
 
       // Додаємо кнопку до активного екрану, якщо він вже відкритий
       if (Lampa.Activity.active() && Lampa.Activity.active().component == 'full') {
+        console.log('Fire Player: Активний екран full, додаю кнопку');
         if (!Lampa.Activity.active().activity.render().find('.view--fire_player').length) {
           Fire.addButton(Lampa.Activity.active().card);
         }
@@ -35,13 +39,17 @@
       // Додаємо обробник подій для активності
       Lampa.Listener.follow('activity', function(e) {
         if (e.component == 'full' && e.type == 'start') {
+          console.log('Fire Player: Подія activity start для full, перевіряю наявність кнопки');
           var button = Lampa.Activity.active().activity.render().find('.view--fire_player');
           if (button.length) {
+            console.log('Fire Player: Кнопка знайдена, запускаю плагін');
             cards = e.object.card;
             Fire.startRcPlugin(button);
           }
         }
       });
+      
+      console.log('Fire Player: Ініціалізація завершена');
     },
 
     // Додавання кнопки на екран фільму
@@ -71,23 +79,34 @@
         Navigator.focus(btn[0]);
       };
       
-      if ((enabled == 'full_start' || enabled == 'settings_component') && !activity.find('.view--fire_player').length) {
-        // Додаємо кнопку після кнопки MODS's
-        if (activity.find('.view--modss_online').length) {
-          activity.find('.view--modss_online').after(btn);
-          addButtonAndToggle(btn);
-        }
-        // Або після кнопки торрентів
-        else if (activity.find('.view--torrent').length) {
-          activity.find('.view--torrent').after(btn);
-          addButtonAndToggle(btn);
-        }
-        // Або перед кнопкою відтворення
-        else if (activity.find('.button--play').length) {
-          activity.find('.button--play').before(btn);
-          addButtonAndToggle(btn);
-        }
+      // Перевіряємо, чи кнопка вже існує
+      if (activity.find('.view--fire_player').length) {
+        return;
       }
+      
+      // Додаємо кнопку після кнопки MODS's
+      if (activity.find('.view--modss_online').length) {
+        activity.find('.view--modss_online').after(btn);
+        addButtonAndToggle(btn);
+      }
+      // Або після кнопки торрентів
+      else if (activity.find('.view--torrent').length) {
+        activity.find('.view--torrent').after(btn);
+        addButtonAndToggle(btn);
+      }
+      // Або перед кнопкою відтворення
+      else if (activity.find('.button--play').length) {
+        activity.find('.button--play').before(btn);
+        addButtonAndToggle(btn);
+      }
+      // Якщо жодна з кнопок не знайдена, додаємо в кінець
+      else {
+        activity.find('.full-start__buttons').append(btn);
+        addButtonAndToggle(btn);
+      }
+      
+      // Виводимо повідомлення в консоль для відлагодження
+      console.log('Fire Player: Кнопка додана на екран');
     },
 
     // Запуск плагіна rc
@@ -98,6 +117,13 @@
 
     // Відкриття плеєра rc
     openRcPlayer: function() {
+      // Перевіряємо наявність компонента bwarch
+      if (!Lampa.Component.get('bwarch') && !window.bwarch_plugin) {
+        console.log('Fire Player: Компонент bwarch не знайдено, неможливо відкрити плеєр');
+        Lampa.Noty.show('Компонент RC Player не знайдено. Переконайтеся, що плагін RC встановлено.');
+        return;
+      }
+      
       // Отримуємо дані про фільм
       var card = Lampa.Activity.active().card;
       var id = Lampa.Utils.hash(card.number_of_seasons ? card.original_name : card.original_title);
@@ -116,6 +142,8 @@
         clarification: all[id] ? true : false
       };
       
+      console.log('Fire Player: Відкриваю RC Player з параметрами', params);
+      
       // Запускаємо активність
       Lampa.Activity.push(params);
     }
@@ -124,10 +152,31 @@
   // Функція для запуску плагіна
   function startPlugin() {
     window.fire_plugin = true;
+    
+    // Виводимо повідомлення в консоль для відлагодження
+    console.log('Fire Player: Плагін запущено');
+    
+    // Перевіряємо наявність компонента bwarch
+    if (Lampa.Component.get('bwarch') || window.bwarch_plugin) {
+      console.log('Fire Player: Компонент bwarch знайдено');
+    } else {
+      console.log('Fire Player: Компонент bwarch не знайдено');
+    }
+    
+    // Ініціалізуємо плагін
     Fire.init();
+    
+    // Додаємо кнопку до активного екрану, якщо він вже відкритий
+    if (Lampa.Activity.active() && Lampa.Activity.active().component == 'full') {
+      Fire.addButton(Lampa.Activity.active().card);
+    }
   }
 
   // Запускаємо плагін, якщо він ще не запущений
-  if (!window.fire_plugin) startPlugin();
+  if (!window.fire_plugin) {
+    startPlugin();
+  } else {
+    console.log('Fire Player: Плагін вже запущено');
+  }
 
 })();
