@@ -92,21 +92,8 @@
 
     // Запуск плагіна rc
     startRcPlugin: function() {
-      // Перевіряємо, чи існує компонент bwarch або глобальна змінна bwarch_plugin
-      if (!Lampa.Component.get('bwarch') && !window.bwarch_plugin) {
-        // Якщо компонент не існує, завантажуємо rc.js
-        var script = document.createElement('script');
-        // Використовуємо правильний URL до rc.js
-        script.src = 'https://bwa.to/rc';
-        script.onload = function() {
-          // Після завантаження rc.js, запускаємо його
-          Fire.openRcPlayer();
-        };
-        document.head.appendChild(script);
-      } else {
-        // Якщо компонент вже існує, просто запускаємо його
-        Fire.openRcPlayer();
-      }
+      // Просто відкриваємо плеєр, не намагаючись завантажити rc.js
+      Fire.openRcPlayer();
     },
 
     // Відкриття плеєра rc
