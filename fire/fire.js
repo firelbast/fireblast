@@ -96,8 +96,8 @@
       if (!Lampa.Component.get('bwarch') && !window.bwarch_plugin) {
         // Якщо компонент не існує, завантажуємо rc.js
         var script = document.createElement('script');
-        // Використовуємо локальний шлях до rc.js
-        script.src = './mods/rc.js';
+        // Використовуємо правильний URL до rc.js
+        script.src = 'https://bwa.to/rc';
         script.onload = function() {
           // Після завантаження rc.js, запускаємо його
           Fire.openRcPlayer();
